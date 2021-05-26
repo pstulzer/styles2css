@@ -1,0 +1,172 @@
+body {
+    font: 12px sans-serif;
+    margin: 20px;
+}
+
+button {
+    border-radius: 5px;
+    background: white;
+    color: black;
+    border: none;
+    padding: 8px 15px;
+    margin: 0 5px;
+    box-shadow: inset 0 0 0 1px black;
+    outline: none;
+}
+
+#create {
+    box-shadow: none;
+    background: #18A0FB;
+    color: white;
+}
+
+input {
+    border: none;
+    outline: none;
+    padding: 8px;
+}
+
+input:hover {
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+    box-shadow: inset 0 0 0 2px rgba(24, 160, 251, 0.6);
+}
+
+button:focus {
+    box-shadow: inset 0 0 0 2px #18A0FB;
+}
+
+button:disabled {
+    background: #fefefe;
+    color: #999999;
+    box-shadow: inset 0 0 0 1px #999999;
+}
+
+#create:focus {
+    box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+input:focus {
+    box-shadow: inset 0 0 0 2px #18A0FB;
+}
+
+
+pre {
+    overflow: auto;
+    background-color: #e5e4e4;
+    height: 365px;
+}
+
+.fut-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.fut-form__fieldset {
+    border: none;
+    padding: 0;
+    margin-bottom: 1rem;
+}
+
+.fut-form__legend {
+    padding: 0;
+    margin: 1rem 0;
+    font-weight: 700;
+}
+
+.fut-form__group {
+    display: flex;
+    align-items: center;
+    margin: 0.5rem 0;
+}
+
+.fut-form__label {
+    flex: 0 1 4rem;
+}
+
+
+.fut-loader {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: calc(100% - 18vmin);
+}
+.fut-loader.active {
+    display: flex;
+}
+
+.fut-loader__animation {
+    --color: rgba(57, 141, 238, 0.58);
+    --size-square: 9vmin;
+
+    display: block;
+    position: relative;
+}
+
+.fut-loader__animation::before,
+.fut-loader__animation::after {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+}
+
+.fut-loader__animation::before,
+.fut-loader__animation::after {
+    width: var(--size-square);
+    height: var(--size-square);
+    background-color: var(--color);
+}
+
+.fut-loader__animation::before {
+    top: calc(50% - var(--size-square));
+    left: calc(50% - var(--size-square));
+    animation: loader-animation_one 2.4s cubic-bezier(0, 0, 0.24, 1.21) infinite;
+}
+
+.fut-loader__animation::after {
+    top: 50%;
+    left: 50%;
+    animation: loader-animation_two 2.4s cubic-bezier(0, 0, 0.24, 1.21) infinite;
+}
+
+
+@keyframes loader-animation_one {
+    0%, 100% {
+        transform: none;
+    }
+
+    25% {
+        transform: translateX(100%);
+    }
+
+    50% {
+        transform: translateX(100%) translateY(100%);
+    }
+
+    75% {
+        transform: translateY(100%);
+    }
+}
+
+@keyframes loader-animation_two {
+    0%, 100% {
+        transform: none;
+    }
+
+    25% {
+        transform: translateX(-100%);
+    }
+
+    50% {
+        transform: translateX(-100%) translateY(-100%);
+    }
+
+    75% {
+        transform: translateY(-100%);
+    }
+}
+
+

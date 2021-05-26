@@ -1,0 +1,119 @@
+<link rel="stylesheet" href="../node_modules/prismjs/themes/prism.css">
+<link rel="stylesheet" href="./index.css">
+<form class="fut-form" onsubmit="return false;">
+    <fieldset class="fut-form__fieldset">
+        <legend class="fut-form__legend">Options</legend>
+        <div class="fut-form__group">
+            <label for="lang" class="fut-form__label">Output</label>
+            <select id="lang" class="fut-form__input">
+                <option value="CSS" selected>CSS</option>
+                <option value="SCSS">SCSS</option>
+                <option value="LESS">LESS</option>
+            </select>
+        </div>
+        <div class="fut-form__group">
+            <label for="style" class="fut-form__label">Format</label>
+            <select id="style" class="fut-form__input">
+                <option value="kebab-case" selected>kebab-case</option>
+                <option value="camelCase">camelCase</option>
+                <option value="PascalCase">PascalCase</option>
+                <option value="snake_case">snake_case</option>
+            </select>
+        </div>
+    </fieldset>
+    <button id="go">Generate</button>
+</form>
+<pre><code id="code"></code>
+
+    <div id="loader" class="fut-loader">
+
+        <h2>It might take a while.</h2>
+
+        <!-- img src="grid.svg" -->
+        <!-- div class="fut-loader__animation"></div -->
+    </div>
+</pre>
+<button id="copy" disabled>Copy</button>
+<button id="download" disabled>Download</button>
+<script>
+
+    const lang = document.getElementById('lang');
+    const style = document.getElementById('style');
+    const code = document.getElementById('code');
+    const loader = document.getElementById('loader');
+
+    function generateCss() {
+        parent.postMessage({pluginMessage: {type: "generate", data: {lang: lang.value, style: style.value}}}, '*');
+    }
+
+    const go = document.getElementById('go');
+    go.onclick = (event) => {
+        event.preventDefault();
+        code.innerHTML = "";
+        loader.classList.add("active");
+        setTimeout(generateCss, 1000);
+    }
+
+    function getSelectionText() {
+        var selectedText = ""
+        if (window.getSelection) { // all modern browsers and IE9+
+            selectedText = window.getSelection().toString()
+        }
+        return selectedText
+    }
+
+    // Function to download data to a file
+    function download2File(data, filename, type) {
+        const file = new Blob([data], {type: type});
+        if (window.navigator.msSaveOrOpenBlob) // IE10+
+            window.navigator.msSaveOrOpenBlob(file, filename);
+        else { // Others
+            const a = document.createElement("a"),
+                url = URL.createObjectURL(file);
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function () {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+        }
+    }
+
+    const download = document.getElementById('download');
+    download.onclick = () => {
+        parent.postMessage({pluginMessage: {type: "getname"}}, '*')
+    }
+
+    function selectElementText(el) {
+        const range = document.createRange() // create new range object
+        range.selectNodeContents(el) // set range to encompass desired element text
+        const selection = window.getSelection() // get Selection object from currently user selected text
+        selection.removeAllRanges() // unselect any user selected text (if any)
+        selection.addRange(range) // add range to Selection object to select it
+    }
+
+    const copy = document.getElementById('copy');
+    copy.onclick = () => {
+        selectElementText(code)
+        document.execCommand("copy");
+    }
+
+    onmessage = (event) => {
+        // console.log("got this from the plugin code", event.data.pluginMessage)
+        if (event.data.pluginMessage.type === "Code") {
+            code.innerHTML = event.data.pluginMessage.data;
+            copy.disabled = false;
+            download.disabled = false;
+            loader.classList.remove("active");
+        }
+        if (event.data.pluginMessage.type === "Name") {
+            let filename = event.data.pluginMessage.data + "." + lang.value.toString().toLowerCase()
+            selectElementText(code)
+            let paratext = getSelectionText()
+            download2File(paratext, filename, 'text/plain')
+        }
+    }
+
+</script>
