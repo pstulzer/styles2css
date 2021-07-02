@@ -18,7 +18,9 @@ figma.showUI(__html__, {width: 500, height: 600});
 const setup = {
     style: "kebab-case",
     lang: "CSS",
-    addNodes: false
+    addNodes: false,
+    useVars: false,
+    baseSize: 16
 }
 
 // kebab-case
@@ -99,6 +101,36 @@ const createColorOutput = (arr = []) => {
     return ret;
 }
 
+const getValue = (value) => parseFloat(value.replace(/[^0-9.]/g, "").trim());
+const getUnit = (value) => value.slice(getValue(value).toString().length).trim();
+const getRemValue = (value = "", base = null) => {
+    const globalFontSize = "100%";
+    if (base === null) {
+        base = globalFontSize;
+    }
+    let ratio = getValue(base);
+    let result = getValue(value);
+
+    if (getUnit(base) === "%") {
+        ratio = (getValue(base) / 100) * 16;
+    }
+
+    if (getUnit(base) === "rem") {
+        ratio = getValue(base) * 16;
+    }
+
+    // console.log("ratio", getUnit(base), getValue(base), ratio);
+
+    if (getUnit(value) === "em") {
+        result = result * ratio;
+    }
+
+    if (getUnit(value) != "rem") {
+        result = result / ratio;
+    }
+
+    return Math.round(result * 10000) / 10000 + "rem";
+}
 const getDezimalValue = (c) => Math.round(c * 255);
 const getFloatValue = (n) => Math.round(n * 1000) / 1000;
 const getRGBAValue = (i) => {
@@ -155,7 +187,7 @@ const getPaintStyleProperties = (style) => {
 
     if (blendStyles.length > 0) {
         ret["id"] = style.id;
-        ret["cssname"] = concatName("color-" + style.name);
+        ret["cssname"] = concatName(style.name);
         blendStyles = blendStyles.map(item => {
             return getRGBAValue(item);
         });
@@ -166,10 +198,13 @@ const getPaintStyleProperties = (style) => {
     return ret;
 }
 
-const getUnit = (u = "") => {
+const figmaUnit2css = (u = "") => {
     switch (u.toLowerCase()) {
         case "pixel":
             return "px"
+            break
+        case "percent":
+            return "%"
             break
         default:
             return "px"
@@ -322,75 +357,88 @@ const getTextStyleProperties = (style) => {
     if (style !== null && style !== undefined && "id" in style) {
         ret["id"] = style.id;
         ret["type"] = "text";
-        ret["cssname"] = concatName("text-" + style.name);
+        ret["cssname"] = concatName(style.name);
         ret["properties"] = [];
 
         // fontName - family, style
         ret["properties"].push({
             "cssproperty": "font-family",
-            "cssname": concatName("text-" + style.name + "--font-family"),
+            "cssname": concatName(style.name + "--font-family"),
             "cssvalue": style.fontName.family
         });
 
         // fontWeight - family, style
         ret["properties"].push({
             "cssproperty": "font-weight",
-            "cssname": concatName("text-" + style.name + "--font-weight"),
+            "cssname": concatName(style.name + "--font-weight"),
             "cssvalue": getFontWeight(style.fontName.style)
         });
 
         // fontStyle - family, style
         ret["properties"].push({
             "cssproperty": "font-style",
-            "cssname": concatName("text-" + style.name + "--font-style"),
+            "cssname": concatName(style.name + "--font-style"),
             "cssvalue": getFontStyle(style.fontName.style)
         });
 
         // fontSize
+        let fontSize = style.fontSize + figmaUnit2css();
+        if (setup.baseSize !== null) {
+            fontSize = getRemValue(fontSize, setup.baseSize.toString());
+        }
         ret["properties"].push({
             "cssproperty": "font-size",
-            "cssname": concatName("text-" + style.name + "--font-size"),
-            "cssvalue": style.fontSize + getUnit()
+            "cssname": concatName(style.name + "--font-size"),
+            "cssvalue": fontSize
         });
 
         // letterSpacing - unit, value - letter-spacing
         if ("letterSpacing" in style && "value" in style.letterSpacing && style.letterSpacing.value !== 0) {
+            let ls = Math.round(style.letterSpacing.value * 100) / 100 + figmaUnit2css(style.letterSpacing.unit)
+            if (style.letterSpacing.unit.toLowerCase() === 'percent') {
+                ls = ((Math.round(style.fontSize * 100) / 100) / 100) * (Math.round(style.letterSpacing.value * 100) / 100) + figmaUnit2css()
+            }
+            // console.log("linletterSpacingeHeight", style.letterSpacing.value, style.letterSpacing.unit, ls);
             ret["properties"].push({
                 "cssproperty": "letter-spacing",
-                "cssname": concatName("text-" + style.name + "--letter-spacing"),
-                "cssvalue": style.letterSpacing.value + getUnit(style.letterSpacing.unit)
+                "cssname": concatName(style.name + "--letter-spacing"),
+                "cssvalue": ls
             });
         }
 
         // lineHeight - unit, value - line-height
         if ("lineHeight" in style && "value" in style.lineHeight && style.lineHeight.value !== 0) {
+            let lh = Math.round(style.lineHeight.value) + figmaUnit2css(style.lineHeight.unit)
+            if (style.lineHeight.unit.toLowerCase() === 'percent') {
+                lh = (Math.round(style.lineHeight.value) / 100).toString()
+            }
             ret["properties"].push({
                 "cssproperty": "line-height",
-                "cssname": concatName("text-" + style.name + "--line-height"),
-                "cssvalue": style.lineHeight.value + getUnit(style.lineHeight.unit)
+                "cssname": concatName(style.name + "--line-height"),
+                "cssvalue": lh
             });
         }
         // paragraphIndent - text-indent
         if ("paragraphIndent" in style && style.paragraphIndent !== 0) {
             ret["properties"].push({
                 "cssproperty": "text-indent",
-                "cssname": concatName("text-" + style.name + "--text-indent"),
-                "cssvalue": style.paragraphIndent + getUnit()
+                "cssname": concatName(style.name + "--text-indent"),
+                "cssvalue": Math.round(style.paragraphIndent * 100) / 100 + figmaUnit2css()
             });
         }
         // paragraphSpacing - margin-bottom
         if ("paragraphSpacing" in style && style.paragraphSpacing !== 0) {
             ret["properties"].push({
                 "cssproperty": "margin-bottom",
-                "cssname": concatName("text-" + style.name + "--margin-bottom"),
-                "cssvalue": style.paragraphSpacing + getUnit()
+                "cssname": concatName(style.name + "--margin-bottom"),
+                "cssvalue": Math.round(style.paragraphSpacing * 100) / 100 + figmaUnit2css()
             });
         }
         // textCase  / text-transform: uppercase | lowercase | capitalize;
         if (style.textCase.toLowerCase() !== "original") {
             ret["properties"].push({
                 "cssproperty": "text-transform",
-                "cssname": concatName("text-" + style.name + "--text-transform"),
+                "cssname": concatName(style.name + "--text-transform"),
                 "cssvalue": getTextCase()
             });
         }
@@ -398,7 +446,7 @@ const getTextStyleProperties = (style) => {
         if (style.textDecoration.toLowerCase() !== "none") {
             ret["properties"].push({
                 "cssproperty": "text-decoration",
-                "cssname": concatName("text-" + style.name + "--text-decoration"),
+                "cssname": concatName(style.name + "--text-decoration"),
                 "cssvalue": getTextDecoration()
             });
         }
@@ -428,18 +476,22 @@ const createTextClassOutput = (arr = []) => {
                         value = "\"" + arr[index].properties[prop].cssvalue + "\"";
                     }
 
-                    if (setup.lang === "CSS") {
-                        ret = ret + "\t" + property + ": " + "var(--" + name + ");\n";
-                    }
-                    if (setup.lang === "LESS") {
-                        ret = ret + "\t" + property + ": " + "@" + name + ";\n";
-                    }
-                    if (setup.lang === "SCSS") {
-                        ret = ret + "\t" + property + ": " + "$" + name + ";\n";
+                    if (setup.useVars === true) {
+                        if (setup.lang === "CSS") {
+                            ret = ret + "\t" + property + ": " + "var(--" + name + ");\n";
+                        }
+                        if (setup.lang === "LESS") {
+                            ret = ret + "\t" + property + ": " + "@" + name + ";\n";
+                        }
+                        if (setup.lang === "SCSS") {
+                            ret = ret + "\t" + property + ": " + "$" + name + ";\n";
+                        }
+                    } else {
+                        ret = ret + "\t" + property + ": " + value + ";\n";
                     }
                 }
 
-                ret = ret + "}\n";
+                ret = ret + "}\n\n";
             }
         }
     }
@@ -540,9 +592,20 @@ const walkNodes = (node) => {
 const main = () => {
     walkNodes(figma.root);
 
+    console.log("1rem", getRemValue("10px", "62.5%"));
+    console.log("0.625rem", getRemValue("10px", "100%"));
+    console.log("0.625rem", getRemValue("10px", "16px"));
+    console.log("0.5556rem", getRemValue("10px", "18px"));
+    console.log("1rem", getRemValue("10px", "10px"));
+    console.log("0.625rem???", getRemValue("10px", "1rem"));
+
+    let stylesOutput = "";
+    if (setup.lang === "CSS") {
+        stylesOutput = stylesOutput + ":root {\n";
+    }
+
     // get the paint styles
     let paintStyles = [];
-
     paintStyleIDs.forEach(item => {
         let myStyle = figma.getStyleById(item);
         if (myStyle !== null && myStyle !== undefined && "id" in myStyle) {
@@ -566,24 +629,22 @@ const main = () => {
 
     let sortedPaintStyles = paintStyles.sort((a, b) => (a.cssname > b.cssname) ? 1 : -1);
     addNodes(sortedPaintStyles);
-    let colorStyles = "/* color styles */\n" + createColorOutput(sortedPaintStyles);
+    stylesOutput = stylesOutput + "/* color styles */\n" + createColorOutput(sortedPaintStyles);
 
     // get the text styles
     let textStyles = textStyleIDs.map(item => {
         return getTextStyleProperties(figma.getStyleById(item));
     });
-    let fontStyles = "/* text styles */\n" + createColorOutput(textStyles);
 
-    let stylesOutput = "";
-    if (setup.lang === "CSS") {
-        stylesOutput = stylesOutput + ":root {\n";
+
+    if (setup.useVars === true) {
+        stylesOutput = stylesOutput + createColorOutput(textStyles);
     }
-    stylesOutput = stylesOutput + colorStyles + fontStyles;
     if (setup.lang === "CSS") {
         stylesOutput = stylesOutput + "}";
     }
-
-    stylesOutput = stylesOutput + "\n\n" + createTextClassOutput(textStyles);
+    stylesOutput = stylesOutput + "\n/* text styles */\n";
+    stylesOutput = stylesOutput + createTextClassOutput(textStyles);
 
     figma.ui.postMessage({type: "Code", data: Prism.highlight(stylesOutput, Prism.languages.css, 'css')})
 
@@ -599,7 +660,6 @@ const main = () => {
 figma.ui.onmessage = msg => {
     // One way of distinguishing between different types of messages sent from
     // your HTML page is to use an object with a "type" property like this.
-
 
     if (msg.type === 'generate') {
         figma.ui.postMessage({type: "Code", data: ""})
