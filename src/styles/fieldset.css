@@ -1,0 +1,33 @@
+fieldset {
+    border: none;
+    display: flex;
+    margin: 0 0 10px 0;
+    padding: 5px 0 0;
+}
+
+fieldset.flexcolumn {
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+fieldset.flexcolumn .switch {
+    justify-content: unset;
+}
+
+fieldset.flexrow {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+legend {
+    font-size: 10px;
+    margin: 0;
+    padding: 0;
+}
+
+.mergelabel--disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}

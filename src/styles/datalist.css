@@ -1,0 +1,23 @@
+.drop {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    gap: 4px;
+}
+
+input[list] {
+    width: 100%;
+    max-width: 100%;
+    padding: 4px;
+}
+
+input[list]:invalid {
+    border-color: var(--figma-color-bg-danger);
+}
+
+datalist {
+    overflow: auto;
+    max-height: 100px;
+    max-width: 50px;
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="../node_modules/prismjs/themes/prism.css">
+    <link rel="stylesheet" href="./styles/styles.css">
+</head>
+<body>
+<main>
+    <form class="fut-form" onsubmit="return false;">
+
+        <fieldset class="exportradio">
+            <legend></legend>
+            <label class="switch">
+                <input type="checkbox" id="usevars" name="usevars" value="true" checked>
+                <span class="label">Would you loke to use variable names for fonts etc.</span>
+            </label>
+        </fieldset>
+
+        <fieldset class="flexrow">
+            <label class="select">
+                <span class="label">Output</span>
+                <select id="lang">
+                    <option value="CSS" selected>CSS</option>
+                    <option value="SCSS">SCSS</option>
+                    <option value="LESS">LESS</option>
+                </select>
+            </label>
+            <label class="select">
+                <span class="label">Format</span>
+                <select id="style">
+                    <option value="kebab-case" selected>kebab-case</option>
+                    <option value="camelCase">camelCase</option>
+                    <option value="PascalCase">PascalCase</option>
+                    <option value="snake_case">snake_case</option>
+                </select>
+            </label>
+        </fieldset>
+
+        <button id="go">Generate</button>
+    </form>
+
+    <pre><code id="code"></code>
+    <div id="loader" class="fut-loader">
+
+        <h2>It might take a while.</h2>
+
+        <!-- img src="grid.svg" -->
+        <!-- div class="fut-loader__animation"></div -->
+    </div>
+</pre>
+</main>
+<button id="copy" disabled>Copy</button>
+<button id="download" disabled>Download</button>
+<script src="./scripts/scripts.js" type="module"></script>
+</body>
+</html>

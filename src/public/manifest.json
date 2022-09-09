@@ -1,0 +1,10 @@
+{
+  "name": "styles2css",
+  "id": "979433220201735512",
+  "api": "1.0.0",
+  "main": "code.mjs",
+  "editorType": [
+    "figma"
+  ],
+  "ui": "index.html"
+}

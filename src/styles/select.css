@@ -1,0 +1,17 @@
+.select {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    gap: 4px;
+}
+
+select {
+    width: 100%;
+    max-width: 100%;
+    padding: 4px;
+}
+
+select:invalid {
+    border-color: var(--figma-color-bg-danger);
+}

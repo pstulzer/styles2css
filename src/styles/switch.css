@@ -1,0 +1,68 @@
+.switch {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.switch:not(:first-of-type) {
+    margin-left: 12px;
+}
+
+.switch .label {
+    font-size: 12px;
+    line-height: 12px;
+    cursor: pointer;
+}
+
+.switch input[type="checkbox"] ~ .label {
+    margin-left: 0.3rem;
+}
+
+.switch input[type="checkbox"]:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.switch input[type="checkbox"]:disabled ~ * {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.switch input[type=checkbox] {
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: content-box; /* default after appearance:none is border-box */
+    position: relative;
+    display: inline-flex;
+    justify-content: flex-start;
+    align-items: center;
+    vertical-align: middle;
+    width: calc(var(--switch-size) * 2);
+    height: var(--switch-size);
+    border: var(--switch-border-width) solid var(--figma-color-checkbox);
+    border-radius: var(--switch-border-outer-radius);
+    transition: background 0.3s;
+}
+
+.switch input[type=checkbox]:before {
+    content: "";
+    flex: 0 0 auto;
+    margin: 2px;
+    width: var(--switch-thumb-size);
+    height: var(--switch-thumb-size);
+    background: var(--figma-color-checkbox);
+    border-radius: var(--switch-thumb-radius);
+    transition: all 0.3s;
+}
+
+.switch input[type=checkbox]:checked {
+    background: var(--figma-color-bg-selected);
+    border-color: var(--figma-color-border-selected);
+    justify-content: flex-end;
+}
+
+.switch input[type=checkbox]:checked:before {
+    background: var(--figma-color-border-selected);
+}

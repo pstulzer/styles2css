@@ -1,0 +1,45 @@
+@import "variables.css";
+@import "form.css";
+@import "fieldset.css";
+@import "button.css";
+@import "radio.css";
+@import "switch.css";
+@import "datalist.css";
+@import "select.css";
+@import "importxliff.css";
+@import "overlay.css";
+
+body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--figma-color-text);
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--figma-color-text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+p {
+    font-size: 11px;
+    margin: 0;
+    padding: 0;
+}
+
+hr {
+    margin: 0;
+    padding: 1px 0 0;
+    border: 0;
+    height: 1px;
+    width: 100%;
+    background: var(--figma-color-hr);
+}

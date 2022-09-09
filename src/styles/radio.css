@@ -1,0 +1,65 @@
+.radio {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.radio:not(:first-of-type) {
+    margin-left: 12px;
+}
+
+.radio .label {
+    font-size: 12px;
+    line-height: 12px;
+    cursor: pointer;
+}
+
+.radio input[type="radio"] ~ .label {
+    margin-left: 0.3rem;
+}
+
+.radio input[type="radio"]:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.radio input[type="radio"]:disabled ~ * {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.radio input[type="radio"] {
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: content-box; /* default after appearance:none is border-box */
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+    width: var(--switch-size);
+    height: var(--switch-size);
+    border: var(--switch-border-width) solid var(--figma-color-checkbox);
+    border-radius: var(--switch-border-outer-radius);
+    transition: background 0.3s;
+}
+
+.radio input[type="radio"]:before {
+    content: "";
+    flex: 0 0 auto;
+    width: var(--switch-thumb-size);
+    height: var(--switch-thumb-size);
+    background: transparent;
+    border-radius: var(--switch-thumb-radius);
+    transition: background 0.3s, left 0.3s;
+}
+
+.radio input[type="radio"]:checked {
+    background: var(--figma-color-bg-selected);
+    border-color: var(--figma-color-border-selected);
+}
+
+.radio input[type="radio"]:checked:before {
+    background: var(--figma-color-border-selected);
+}
