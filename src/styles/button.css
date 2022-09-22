@@ -32,3 +32,11 @@ button:hover {
     border-color: var(--figma-color-border-selected);
     background: var(--figma-color-bg-selected);
 }
+
+button[disabled],
+button[disabled]:hover {
+    cursor: default;
+    color: var(--figma-color-bg-disabled-secondary);
+    border-color: var(--figma-color-bg-disabled-secondary);
+    background: var(--figma-color-bg-disabled);
+}

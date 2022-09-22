@@ -6,9 +6,9 @@ import {GetTextCase} from "./getTextCase";
 import {GetTextDecoration} from "./getTextDecoration";
 import {GetRemValue} from "./getRemValue";
 
-const getTextStyleProperties = (setup, style) => {
+export const GetTextStyleProperties = (setup, style) => {
     const ret = {}
-    console.log("getTextStyleProperties", style);
+    // console.log("getTextStyleProperties", style);
     ret["id"] = style.id;
     ret["type"] = "text";
     ret["cssname"] = ConcatStyleName(setup, style.name);
@@ -107,7 +107,6 @@ const getTextStyleProperties = (setup, style) => {
     return ret;
 }
 
-
 export const TextClassOutput = (setup, arr = []) => {
     let ret = "";
     if (Array.isArray(arr) && arr.length > 0) {
@@ -131,7 +130,7 @@ export const TextClassOutput = (setup, arr = []) => {
                         value = "\"" + arr[index].properties[prop].cssvalue + "\"";
                     }
 
-                    if (setup.useVars === true) {
+                    if (setup.useVars === "on") {
                         if (setup.lang === "CSS") {
                             ret = ret + "\t" + property + ": " + "var(--" + name + ");\n";
                         }
@@ -151,17 +150,5 @@ export const TextClassOutput = (setup, arr = []) => {
         }
     }
 
-    return "\n/* text styles */\n" + ret;
+    return ret;
 }
-
-export const TextStyles = (figma, setup, styles) => {
-    let textStyles = styles.map(item => {
-        let myStyle = figma.getStyleById(item);
-        if (myStyle !== null && myStyle !== undefined && "id" in myStyle) {
-            return getTextStyleProperties(setup, myStyle);
-        }
-    });
-    console.log("TextStyles", textStyles);
-
-    return textStyles
-};

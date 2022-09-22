@@ -18,7 +18,7 @@ export const BuildColorOutput = (setup, arr = []) => {
                 }
                 ret = ret + arr[index].cssname + ": " + arr[index].cssvalue + ";\n";
             }
-            if (arr[index].type === "text") {
+            if (arr[index].type === "text" || arr[index].type === "effect") {
                 for (let prop in arr[index].properties) {
                     if (setup.lang === "SCSS") {
                         ret = ret + "$";

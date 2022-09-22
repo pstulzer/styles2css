@@ -1,0 +1,10 @@
+.fut-message {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: calc(100% - 18vmin);
+}
+.fut-message.active {
+    display: flex;
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<canvas id="canvas" width="500" height="500"></canvas>
+
+<script>
+    // https://ch.mathworks.com/de/discovery/affine-transformation.html
+    // https://jsfiddle.net/yckart/op72dcoc/
+    // https://medium.com/@benjamin.botto/rotating-and-orbiting-with-affine-transformations-8d624d659daa
+    // https://stackoverflow.com/questions/17836996/computing-affine-transformation-from-2-sets-of-points
+    // https://stackoverflow.com/questions/68437706/how-to-transform-rectangle-a-with-contents-into-rectangle-b-using-an-affine-tra
+    // https://stackoverflow.com/questions/68765751/get-absolute-css-transformation-matrix
+
+    function wait(fn) {
+        window.setTimeout(fn, 250);
+    }
+
+    const canvas = document.querySelector("#canvas");
+    const c = canvas.getContext('2d');
+    const a = new Image();
+    a.src = "http://o.ooli.ca/mona.jpg";
+
+    c.rotate(30 * Math.PI / 180);
+
+    c.beginPath();
+    c.moveTo(0, 0);
+    c.lineTo(0, 200);
+    c.lineWidth = 15;
+
+
+    wait(function() {
+        c.stroke();
+    });
+</script>
+</body>
+</html>

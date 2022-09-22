@@ -1,6 +1,8 @@
 import Prism from "prismjs";
-import {GetAllIDs} from "./computeIDs";
+import {ProcessIDs} from "./computeIDs";
+import {ProcessStyles} from "./computeStyles";
 import {BuildCss} from "./buildCss";
+import {CustomTimeout} from "./customTimeout";
 
 const setup = {
     style: "kebab-case",
@@ -12,24 +14,44 @@ const setup = {
 
 const main = async (setup) => {
     try {
-        let styles = await GetAllIDs(figma.root, {paint: [], effect: [], text: []});
-        let output = BuildCss(figma, setup, styles);
+        let styles = await mainLoop(setup, figma.root);
+        let output = await BuildCss(figma, setup, styles);
         figma.ui.postMessage({type: "Code", data: Prism.highlight(output, Prism.languages.css, 'css')});
     } catch (err) {
         console.error("main", err);
     }
 }
 
+const mainLoop = async (setup, node, ids = {}) => {
+    let nodeids = ProcessIDs(node);
+    ids = await ProcessStyles(setup, ids, nodeids);
+    let counter = Object.keys(ids).length;
+    if (counter > 0) {
+        figma.ui.postMessage({type: "STYLES", value: counter});
+    }
+
+    await CustomTimeout(1)
+        .then(async () => {
+            if ("children" in node) {
+                for (const child of node.children) {
+                    await mainLoop(setup, child, ids);
+                }
+            }
+        })
+        .catch(err => {
+            return new Error("Sorry " + err);
+        });
+    return ids;
+};
+
 figma.showUI(__html__, {width: 500, height: 600});
 figma.ui.onmessage = msg => {
     if (msg.type === 'generate') {
-        figma.ui.postMessage({type: "Code", data: ""})
-
         if ("data" in msg) {
             setup.style = msg.data.style;
             setup.lang = msg.data.lang;
+            setup.useVars = msg.data.usevars;
         }
-
         main(setup);
     }
 
@@ -38,20 +60,12 @@ figma.ui.onmessage = msg => {
     }
 
     if (msg.type === 'cancel') {
-        // Make sure to close the plugin when you're done. Otherwise the plugin will
-        // keep running, which shows the cancel button at the bottom of the screen.
         figma.closePlugin();
     }
 };
 figma.on("currentpagechange", () => {
     // console.log("currentpagechange");
 });
-figma.on("run", async () => {
-    // const localStyles = await LocalPaintStyles(figma);
-    /*
-    if (localStyles.length > 0) {
-        figma.ui.postMessage(localStyles.length);
-    }
-
-     */
+figma.on("run", () => {
+    // console.log("run");
 });

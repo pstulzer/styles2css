@@ -1,6 +1,7 @@
 @import "variables.css";
 @import "form.css";
 @import "fieldset.css";
+@import "section.css";
 @import "button.css";
 @import "radio.css";
 @import "switch.css";
@@ -8,6 +9,8 @@
 @import "select.css";
 @import "importxliff.css";
 @import "overlay.css";
+@import "loader.css";
+@import "message.css";
 
 body {
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
@@ -42,4 +45,11 @@ hr {
     height: 1px;
     width: 100%;
     background: var(--figma-color-hr);
+}
+
+pre {
+    overflow: auto;
+    background-color: #e5e4e4;
+    height: 350px;
+    width: 100%;
 }

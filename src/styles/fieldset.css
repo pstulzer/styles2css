@@ -21,6 +21,11 @@ fieldset.flexrow {
     gap: 16px;
 }
 
+fieldset.flexrow--right {
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
 legend {
     font-size: 10px;
     margin: 0;

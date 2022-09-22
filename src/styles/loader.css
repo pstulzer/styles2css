@@ -1,0 +1,102 @@
+.fut-loader {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: calc(100% - 18vmin);
+}
+.fut-loader.active {
+    display: flex;
+}
+
+.counter {
+    display: flex;
+    justify-content: center;
+    flex: 1 1 100%;
+}
+.counter h2 {
+    display: flex;
+    flex: 0 1 50%;
+    margin: 0;
+    padding: 0;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--figma-color-text);
+}
+
+.counter .counter__text {
+    padding-right: 10px;
+}
+
+.fut-loader__animation {
+    --color: rgba(57, 141, 238, 0.58);
+    --size-square: 9vmin;
+
+    display: block;
+    position: relative;
+}
+
+.fut-loader__animation::before,
+.fut-loader__animation::after {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+}
+
+.fut-loader__animation::before,
+.fut-loader__animation::after {
+    width: var(--size-square);
+    height: var(--size-square);
+    background-color: var(--color);
+}
+
+.fut-loader__animation::before {
+    top: calc(50% - var(--size-square));
+    left: calc(50% - var(--size-square));
+    animation: loader-animation_one 2.4s cubic-bezier(0, 0, 0.24, 1.21) infinite;
+}
+
+.fut-loader__animation::after {
+    top: 50%;
+    left: 50%;
+    animation: loader-animation_two 2.4s cubic-bezier(0, 0, 0.24, 1.21) infinite;
+}
+
+
+@keyframes loader-animation_one {
+    0%, 100% {
+        transform: none;
+    }
+
+    25% {
+        transform: translateX(100%);
+    }
+
+    50% {
+        transform: translateX(100%) translateY(100%);
+    }
+
+    75% {
+        transform: translateY(100%);
+    }
+}
+
+@keyframes loader-animation_two {
+    0%, 100% {
+        transform: none;
+    }
+
+    25% {
+        transform: translateX(-100%);
+    }
+
+    50% {
+        transform: translateX(-100%) translateY(-100%);
+    }
+
+    75% {
+        transform: translateY(-100%);
+    }
+}
+

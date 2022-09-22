@@ -2,21 +2,47 @@ import {Download2File} from "./downloadFile";
 import {TextSelection} from "./textSelection";
 
 const lang = document.getElementById('lang');
-const style = document.getElementById('style');
 const code = document.getElementById('code');
 const loader = document.getElementById('loader');
+const counter = loader.querySelector("h2");
+const message = document.getElementById('message');
+const generate = document.getElementById('go');
 
-function generateCss() {
-    parent.postMessage({pluginMessage: {type: "generate", data: {lang: lang.value, style: style.value}}}, '*');
+const generateCss = (settings) => {
+    parent.postMessage({
+        pluginMessage: {
+            type: "generate",
+            data: settings
+        }
+    }, '*');
 }
-
-const go = document.getElementById('go');
-go.onclick = (event) => {
-    event.preventDefault();
+const generateForm = document.getElementById('generateForm');
+generateForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    new FormData(generateForm);
+});
+generateForm.addEventListener('formdata', (e) => {
     code.innerHTML = "";
+    message.classList.remove("active");
     loader.classList.add("active");
-    setTimeout(generateCss, 1000);
-}
+    copy.disabled = true;
+    download.disabled = true;
+    generate.disabled = true;
+
+    const settings = {
+        lang: "CSS",
+        style: "kebab-case",
+        usevars: "off"
+    }
+
+    let data = e.formData;
+    for (let entry of data.entries()) {
+        settings[entry[0]] = entry[1];
+    }
+
+    setTimeout(generateCss, 100, settings);
+    window.history.back();
+});
 
 const download = document.getElementById('download');
 download.onclick = () => {
@@ -43,15 +69,35 @@ onmessage = (event) => {
         code.innerHTML = event.data.pluginMessage.data;
         copy.disabled = false;
         download.disabled = false;
+        generate.disabled = false;
         loader.classList.remove("active");
     }
     if (event.data.pluginMessage.type === "Name") {
         let filename = event.data.pluginMessage.data + "." + lang.value.toString().toLowerCase()
         selectElementText(code)
-        //  let paratext = TextSelection()
-        // Download2File(paratext, filename, 'text/plain')
+        let paratext = TextSelection()
+        Download2File(paratext, filename, 'text/plain')
     }
     if (event.data.pluginMessage.type === "ShowError") {
         alert(event.data.pluginMessage.value);
+    }
+    if (event.data.pluginMessage.type === "STYLES") {
+        let idle = "";
+        let val = "";
+        let value = counter.querySelector(".counter__value");
+        if (value === null) {
+            value = `<span class="counter__value"></span>`;
+        }
+        val = value.textContent;
+        if (parseInt(val) === event.data.pluginMessage.value) {
+            idle = counter.querySelector(".counter__idle").textContent;
+            idle = idle + ".";
+            if (idle.length > 10) {
+                idle = "";
+            }
+        } else {
+            val = event.data.pluginMessage.value
+        }
+        counter.innerHTML = `<span class="counter__text">Counting styles:</span><span class="counter__value">` + val + `</span><span class="counter__idle">` + idle + `</span>`;
     }
 }
